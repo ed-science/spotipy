@@ -89,23 +89,15 @@ def prompt_for_user_token(
         show_dialog=show_dialog
     )
 
-    # try to get a valid token for this user, from the cache,
-    # if not in the cache, the create a new (this will send
-    # the user to a web page where they can authorize this app)
-
-    token_info = sp_oauth.validate_token(sp_oauth.cache_handler.get_cached_token())
-
-    if not token_info:
-        code = sp_oauth.get_auth_response()
-        token = sp_oauth.get_access_token(code, as_dict=False)
-    else:
+    if token_info := sp_oauth.validate_token(
+        sp_oauth.cache_handler.get_cached_token()
+    ):
         return token_info["access_token"]
 
+    code = sp_oauth.get_auth_response()
+    token = sp_oauth.get_access_token(code, as_dict=False)
     # Auth'ed API request
-    if token:
-        return token
-    else:
-        return None
+    return token or None
 
 
 def get_host_port(netloc):
@@ -120,16 +112,15 @@ def get_host_port(netloc):
 
 
 def normalize_scope(scope):
-    if scope:
-        if isinstance(scope, str):
-            scopes = scope.split(',')
-        elif isinstance(scope, list) or isinstance(scope, tuple):
-            scopes = scope
-        else:
-            raise Exception(
-                "Unsupported scope value, please either provide a list of scopes, "
-                "or a string of scopes separated by commas"
-            )
-        return " ".join(sorted(scopes))
-    else:
+    if not scope:
         return None
+    if isinstance(scope, str):
+        scopes = scope.split(',')
+    elif isinstance(scope, (list, tuple)):
+        scopes = scope
+    else:
+        raise Exception(
+            "Unsupported scope value, please either provide a list of scopes, "
+            "or a string of scopes separated by commas"
+        )
+    return " ".join(sorted(scopes))

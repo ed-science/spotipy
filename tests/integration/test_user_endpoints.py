@@ -119,8 +119,7 @@ class SpotipyPlaylistApiTest(unittest.TestCase):
         self.assertEqual(pl["tracks"]["total"], 0)
 
     def test_max_retries_reached_post(self):
-        i = 0
-        while i < 500:
+        for _ in range(500):
             try:
                 self.spotify_no_retry.playlist_change_details(
                     self.new_playlist['id'], description="test")
@@ -128,7 +127,6 @@ class SpotipyPlaylistApiTest(unittest.TestCase):
                 self.assertIsInstance(e, SpotifyException)
                 self.assertEqual(e.http_status, 429)
                 return
-            i += 1
         self.fail()
 
     def test_playlist_add_items(self):

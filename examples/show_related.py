@@ -5,14 +5,10 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import sys
 
-if len(sys.argv) > 1:
-    artist_name = sys.argv[1]
-else:
-    artist_name = 'weezer'
-
+artist_name = sys.argv[1] if len(sys.argv) > 1 else 'weezer'
 client_credentials_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-result = sp.search(q='artist:' + artist_name, type='artist')
+result = sp.search(q=f'artist:{artist_name}', type='artist')
 try:
     name = result['artists']['items'][0]['name']
     uri = result['artists']['items'][0]['uri']

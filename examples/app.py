@@ -79,7 +79,7 @@ def sign_out():
         os.remove(session_cache_path())
         session.clear()
     except OSError as e:
-        print ("Error: %s - %s." % (e.filename, e.strerror))
+        print(f"Error: {e.filename} - {e.strerror}.")
     return redirect('/')
 
 
@@ -102,7 +102,7 @@ def currently_playing():
         return redirect('/')
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     track = spotify.current_user_playing_track()
-    if not track is None:
+    if track is not None:
         return track
     return "No track currently playing."
 

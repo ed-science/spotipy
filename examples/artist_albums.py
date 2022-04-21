@@ -18,12 +18,9 @@ def get_args():
 
 
 def get_artist(name):
-    results = sp.search(q='artist:' + name, type='artist')
+    results = sp.search(q=f'artist:{name}', type='artist')
     items = results['artists']['items']
-    if len(items) > 0:
-        return items[0]
-    else:
-        return None
+    return items[0] if len(items) > 0 else None
 
 
 def show_artist_albums(artist):
@@ -44,8 +41,7 @@ def show_artist_albums(artist):
 
 def main():
     args = get_args()
-    artist = get_artist(args.artist)
-    if artist:
+    if artist := get_artist(args.artist):
         show_artist_albums(artist)
     else:
         logger.error("Can't find artist: %s", artist)
